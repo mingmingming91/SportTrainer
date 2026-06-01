@@ -1,0 +1,22 @@
+{
+  "name": "智能指令音訊隨機播放器",
+  "short_name": "指令播放器",
+  "description": "自訂動作、權重比例，打造專屬的節奏訓練助手（支援粵語發音）",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
