@@ -1,11 +1,10 @@
 const CACHE_NAME = 'command-player-v1';
 const ASSETS = [
-  './',
-  './index.html',
-  './script.js',
-  './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
+  'index.html',
+  'script.js',
+  'manifest.json',
+  'icons/icon-192.png',
+  'icons/icon-512.png'
 ];
 
 // 安裝 Service Worker 並快取檔案
