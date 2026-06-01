@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎙️ 智能指令音訊隨機播放器 (Dark Mode)</title>
+    <title>🎙️ 智能指令音訊隨機播放器 (RWD Mobile Optimized)</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#020617">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link class="pwa-icon" rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,13 +17,12 @@
     
     <style>
         body { font-family: 'Inter', sans-serif; }
-        /* 深色模式專屬全列拖曳虛線與過渡特效 */
+        /* 拖曳時的虛線樣式 */
         .dragging { 
-            opacity: 0.3; 
-            background-color: #1e293b; 
-            border: 2px dashed #3b82f6; 
+            opacity: 0.4; 
+            background-color: #1e293b !important; 
+            border: 2px dashed #3b82f6 !important; 
         }
-        /* 隱藏數字輸入框的微調箭頭 */
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button {
             -webkit-appearance: none;
@@ -31,67 +30,57 @@
         }
     </style>
 </head>
-<body class="bg-slate-950 min-h-screen antialiased text-slate-200 py-10 px-4">
+<body class="bg-slate-950 min-h-screen antialiased text-slate-200 py-6 px-3 sm:py-10 sm:px-4">
 
     <div class="max-w-3xl mx-auto space-y-6">
         
         <header class="text-center space-y-1">
-            <h1 class="text-3xl font-extrabold tracking-tight text-white flex items-center justify-center gap-2">
-                <span class="material-icons-round text-blue-500 text-3xl">record_voice_over</span> 智能指令播放器
+            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center justify-center gap-2">
+                <span class="material-icons-round text-blue-500 text-2xl sm:text-3xl">record_voice_over</span> 智能指令播放器
             </h1>
-            <p class="text-sm text-slate-400">自訂指令、權重比例，打造專屬的節奏訓練助手（支援粵語發音）</p>
+            <p class="text-xs sm:text-sm text-slate-400">自訂指令、權重比例，打造專屬的節奏訓練助手</p>
         </header>
 
         <main class="space-y-6">
             
-            <section class="bg-slate-900 rounded-2xl shadow-xl border border-slate-800/80 p-6 space-y-4">
+            <section class="bg-slate-900 rounded-2xl shadow-xl border border-slate-800/80 p-4 sm:p-6 space-y-4">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                    <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
                         <span class="material-icons-round text-slate-500">format_list_numbered</span> 1. 訓練指令清單
                     </h2>
-                    <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full font-medium border border-slate-700/50">
-                        點選任意行空白處即可拖曳排序
+                    <span class="text-[10px] sm:text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full font-medium border border-slate-700/50">
+                        按住指令任一處即可拖曳排序
                     </span>
                 </div>
 
-                <div class="overflow-hidden border border-slate-800 rounded-xl bg-slate-950/40">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-950/80 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-slate-800">
-                                <th class="p-3 w-14 text-center">序號</th>
-                                <th class="p-3">指令</th>
-                                <th class="p-3 w-28 text-center">隨機權重</th>
-                                <th class="p-3 w-24 text-center">機率</th>
-                                <th class="p-3 w-16 text-center">刪除</th>
-                            </tr>
-                        </thead>
-                        <tbody id="commandList" class="divide-y divide-slate-800/60 text-sm">
-                            </tbody>
-                    </table>
-                </div>
-
-                <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800 flex gap-3 items-center">
-                    <div class="w-8 text-center text-slate-500 font-bold text-xs select-none" id="nextIndex">#1</div>
-                    
-                    <div class="flex-1 relative">
-                        <span class="material-icons-round text-slate-500 absolute left-3 top-2.5 text-sm">fitness_center</span>
-                        <input type="text" id="cmdText" placeholder="輸入新指令 (如：左直拳、閃躲...)" 
-                               class="w-full pl-9 pr-3 py-2 text-sm bg-slate-900 border border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 text-slate-100 placeholder-slate-500 font-semibold transition">
-                    </div>
-                    
-                    <div class="w-28 relative">
-                        <span class="material-icons-round text-slate-500 absolute left-2.5 top-2.5 text-sm">scale</span>
-                        <input type="number" id="cmdWeight" placeholder="權重" value="10" min="1" max="100" 
-                               class="w-full pl-8 pr-2 py-2 text-sm text-center bg-slate-900 border border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 text-slate-100 font-semibold transition">
+                <div class="space-y-2" id="commandList">
                     </div>
 
-                    <button onclick="addCommand()" class="bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center gap-1 shadow-md shadow-blue-900/20">
-                        <span class="material-icons-round text-sm">add</span> 新增
-                    </button>
+                <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+                    <div class="flex items-center gap-3 flex-1">
+                        <div class="w-6 text-center text-slate-500 font-bold text-xs select-none" id="nextIndex">#1</div>
+                        <div class="flex-1 relative">
+                            <span class="material-icons-round text-slate-500 absolute left-3 top-2.5 text-sm">fitness_center</span>
+                            <input type="text" id="cmdText" placeholder="輸入新指令 (如：左直拳)" 
+                                   class="w-full pl-9 pr-3 py-2 text-sm bg-slate-900 border border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 text-slate-100 placeholder-slate-500 font-semibold transition">
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3 items-center justify-between sm:justify-end">
+                        <div class="w-28 relative">
+                            <span class="material-icons-round text-slate-500 absolute left-2.5 top-2.5 text-sm">scale</span>
+                            <input type="number" id="cmdWeight" placeholder="權重" value="10" min="1" max="100" 
+                                   class="w-full pl-8 pr-2 py-2 text-sm text-center bg-slate-900 border border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 text-slate-100 font-semibold transition">
+                        </div>
+
+                        <button onclick="addCommand()" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-1 shadow-md shadow-blue-900/20">
+                            <span class="material-icons-round text-sm">add</span> 新增
+                        </button>
+                    </div>
                 </div>
             </section>
 
-            <section class="bg-slate-900 rounded-2xl shadow-xl border border-slate-800/80 p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <section class="bg-slate-900 rounded-2xl shadow-xl border border-slate-800/80 p-4 sm:p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="space-y-2">
                     <label class="text-sm font-bold text-slate-300 flex items-center gap-1.5">
                         <span class="material-icons-round text-slate-500 text-lg">shuffle</span> 播放模式
@@ -101,20 +90,20 @@
                             <input type="radio" name="playMode" value="sequence" checked class="w-4 h-4 text-blue-500 border-slate-700 bg-slate-900 focus:ring-blue-500">
                             <div class="text-xs">
                                 <p class="font-semibold text-slate-200">模式一：順序循環</p>
-                                <p class="text-slate-500">依序號 1、2、3 輪流</p>
+                                <p class="text-slate-500">依序號輪流播放</p>
                             </div>
                         </label>
                         <label class="flex items-center gap-3 p-2.5 bg-slate-950/40 border border-slate-800 rounded-xl cursor-pointer hover:bg-slate-800/50 transition">
                             <input type="radio" name="playMode" value="random" class="w-4 h-4 text-blue-500 border-slate-700 bg-slate-900 focus:ring-blue-500">
                             <div class="text-xs">
                                 <p class="font-semibold text-slate-200">模式二：隨機機率</p>
-                                <p class="text-slate-500">依設定的權重比例抽選</p>
+                                <p class="text-slate-500">依權重比例抽選</p>
                             </div>
                         </label>
                     </div>
                 </div>
 
-                <div class="space-y-2 border-t md:border-t-0 md:border-x border-slate-800 md:px-6">
+                <div class="space-y-2 border-t md:border-t-0 md:border-x border-slate-800 md:px-6 pt-4 md:pt-0">
                     <label class="text-sm font-bold text-slate-300 flex items-center gap-1.5">
                         <span class="material-icons-round text-slate-500 text-lg">timer</span> 語音間隔時間
                     </label>
@@ -141,7 +130,7 @@
                     </div>
                 </div>
 
-                <div class="space-y-2 border-t md:border-t-0 border-slate-800">
+                <div class="space-y-2 border-t md:border-t-0 border-slate-800 pt-4 md:pt-0">
                     <label class="text-sm font-bold text-slate-300 flex items-center gap-1.5">
                         <span class="material-icons-round text-slate-500 text-lg">hourglass_top</span> 訓練總時長
                     </label>
@@ -155,11 +144,11 @@
                 </div>
             </section>
 
-            <section class="bg-slate-900 text-white rounded-2xl shadow-2xl border border-slate-800 p-6 space-y-6" id="dashboardPanel">
+            <section class="bg-slate-900 text-white rounded-2xl shadow-2xl border border-slate-800 p-4 sm:p-6 space-y-6" id="dashboardPanel">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pb-4 border-b border-slate-800">
                     <div class="flex items-center gap-3 text-center sm:text-left">
                         <div class="w-3 h-3 rounded-full bg-slate-600" id="statusDot"></div>
-                        <div id="statusDisplay" class="text-lg font-bold tracking-wide text-slate-400">狀態：準備就緒</div>
+                        <div id="statusDisplay" class="text-base sm:text-lg font-bold tracking-wide text-slate-400">狀態：準備就緒</div>
                     </div>
                     <div id="countdownContainer" class="text-2xl font-black font-mono tracking-wider bg-slate-950 px-4 py-1.5 rounded-xl border border-slate-800 text-slate-400">
                         03:00
@@ -167,11 +156,11 @@
                 </div>
 
                 <div class="flex gap-4">
-                    <button id="startBtn" onclick="startPlayback()" class="flex-1 bg-blue-600 hover:bg-blue-500 active:scale-[0.99] text-white font-bold py-4 px-6 rounded-xl shadow-lg shadow-blue-900/30 transition flex items-center justify-center gap-2 text-lg">
-                        <span class="material-icons-round text-2xl">play_arrow</span> 開始訓練
+                    <button id="startBtn" onclick="startPlayback()" class="flex-1 bg-blue-600 hover:bg-blue-500 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-blue-900/30 transition flex items-center justify-center gap-2 text-base sm:text-lg">
+                        <span class="material-icons-round text-xl sm:text-2xl">play_arrow</span> 開始訓練
                     </button>
-                    <button id="stopBtn" onclick="stopPlayback()" disabled class="flex-1 bg-slate-950 text-slate-600 font-bold py-4 px-6 rounded-xl transition flex items-center justify-center gap-2 text-lg cursor-not-allowed border border-slate-900">
-                        <span class="material-icons-round text-2xl">stop</span> 停止
+                    <button id="stopBtn" onclick="stopPlayback()" disabled class="flex-1 bg-slate-950 text-slate-600 font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 text-base sm:text-lg cursor-not-allowed border border-slate-900">
+                        <span class="material-icons-round text-xl sm:text-2xl">stop</span> 停止
                     </button>
                 </div>
             </section>
@@ -179,6 +168,298 @@
         </main>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
+            });
+        }
+
+        let commands = [
+            { id: 1, text: "左直拳", weight: 50 },
+            { id: 2, text: "右勾拳", weight: 30 },
+            { id: 3, text: "閃躲", weight: 20 }
+        ];
+
+        let timerId = null;        
+        let countdownId = null;    
+        let isPlaying = false;     
+        let sequenceIndex = 0;     
+        let totalSecondsLeft = 0;  
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderCommands();        
+            setupDragAndDrop();     
+            updateInitialCountdownDisplay(); 
+            
+            document.getElementById('durationMin').addEventListener('input', updateInitialCountdownDisplay);
+            document.getElementById('durationSec').addEventListener('input', updateInitialCountdownDisplay);
+        });
+
+        // 🌟 重點優化：全新 RWD 彈性排版渲染，在手機上保證指令欄極寬！
+        function renderCommands() {
+            const container = document.getElementById('commandList');
+            container.innerHTML = '';
+            
+            const totalWeight = commands.reduce((sum, cmd) => sum + cmd.weight, 0);
+
+            if (commands.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-500 bg-slate-950/20 rounded-xl border border-slate-800/50">目前清單空空如也，請在下方新增。</div>`;
+                document.getElementById('nextIndex').innerText = "#1";
+                return;
+            }
+
+            commands.forEach((cmd, index) => {
+                const percentage = totalWeight > 0 ? ((cmd.weight / totalWeight) * 100).toFixed(1) : 0;
+                
+                const itemRow = document.createElement('div');
+                itemRow.setAttribute('draggable', 'true'); 
+                itemRow.setAttribute('data-id', cmd.id);   
+                
+                // 使用 Tailwind 的 sm: 斷點。
+                // 手機：垂直微卡片布局 (flex-col)；電腦：單行橫向布局 (sm:flex-row)
+                itemRow.className = 'dragging-target p-3 bg-slate-950/40 border border-slate-800/80 rounded-xl transition flex flex-col sm:flex-row gap-3 items-stretch sm:items-center cursor-grab active:cursor-grabbing hover:bg-slate-800/20';
+                
+                itemRow.innerHTML = `
+                    <div class="flex items-center gap-3 flex-1">
+                        <div class="w-6 text-center font-bold text-slate-500 text-xs select-none">#${index + 1}</div>
+                        <div class="flex-1">
+                            <input type="text" value="${cmd.text}" 
+                                   onchange="updateText(${cmd.id}, this.value)" 
+                                   class="w-full px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-slate-100 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition text-sm sm:text-base">
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between sm:justify-end gap-3 border-t border-slate-800/50 sm:border-t-0 pt-2 sm:pt-0">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-500 sm:hidden">權重:</span>
+                            <input type="number" value="${cmd.weight}" min="1" max="100" 
+                                   onchange="updateWeight(${cmd.id}, this.value)" 
+                                   class="w-16 px-1 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-center text-slate-100 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/40 text-sm">
+                        </div>
+                        
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-slate-500 sm:hidden">機率:</span>
+                            <div class="w-20 py-1.5 text-center font-black text-emerald-400 text-xs sm:text-sm tracking-wide bg-emerald-950/20 rounded-lg select-none">
+                                ${percentage}%
+                            </div>
+                        </div>
+
+                        <button onclick="deleteCommand(${cmd.id})" class="text-slate-500 hover:text-rose-500 transition p-1 flex items-center justify-center">
+                            <span class="material-icons-round text-lg sm:text-xl">delete_outline</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(itemRow);
+            });
+
+            document.getElementById('nextIndex').innerText = `#${commands.length + 1}`;
+        }
+
+        // --- 資料異動核心 ---
+        function addCommand() {
+            const textInput = document.getElementById('cmdText');
+            const weightInput = document.getElementById('cmdWeight');
+            const text = textInput.value.trim();
+            const weight = parseInt(weightInput.value);
+
+            if (!text || isNaN(weight) || weight < 1 || weight > 100) return;
+
+            commands.push({ id: Date.now(), text: text, weight: weight });
+            renderCommands();
+
+            textInput.value = '';
+            weightInput.value = '10';
+            updateInitialCountdownDisplay();
+        }
+
+        function updateText(id, newText) {
+            const trimmed = newText.trim();
+            if (!trimmed) { renderCommands(); return; }
+            const cmd = commands.find(c => c.id === id);
+            if (cmd) cmd.text = trimmed;
+        }
+
+        function updateWeight(id, newWeight) {
+            let val = parseInt(newWeight);
+            if (isNaN(val) || val < 1) val = 1;
+            if (val > 100) val = 100;
+            const cmd = commands.find(c => c.id === id);
+            if (cmd) { cmd.weight = val; renderCommands(); }
+        }
+
+        function deleteCommand(id) {
+            commands = commands.filter(cmd => cmd.id !== id);
+            renderCommands();
+        }
+
+        // --- 拖曳排序邏輯 (相容全行/全卡片拖曳) ---
+        function setupDragAndDrop() {
+            const container = document.getElementById('commandList');
+
+            container.addEventListener('dragstart', (e) => {
+                const target = e.target.closest('.dragging-target');
+                if (target) target.classList.add('dragging');
+            });
+
+            container.addEventListener('dragend', (e) => {
+                const target = e.target.closest('.dragging-target');
+                if (target) target.classList.remove('dragging');
+                
+                const rows = Array.from(container.querySelectorAll('.dragging-target'));
+                const newOrder = [];
+                rows.forEach(row => {
+                    const id = parseInt(row.getAttribute('data-id'));
+                    const found = commands.find(c => c.id === id);
+                    if (found) newOrder.push(found);
+                });
+                commands = newOrder; 
+                renderCommands(); 
+            });
+
+            container.addEventListener('dragover', (e) => {
+                e.preventDefault(); 
+                const draggingRow = container.querySelector('.dragging');
+                if (!draggingRow) return;
+
+                const target = e.target.closest('.dragging-target');
+                if (target && target !== draggingRow) {
+                    const bounding = target.getBoundingClientRect();
+                    const offset = e.clientY - bounding.top - (bounding.height / 2);
+                    if (offset > 0) {
+                        container.insertBefore(draggingRow, target.nextSibling);
+                    } else {
+                        container.insertBefore(draggingRow, target);
+                    }
+                }
+            });
+        }
+
+        // --- 播放與語音控制核心 ---
+        function toggleTimeInputs() {
+            const mode = document.querySelector('input[name="timeMode"]:checked').value;
+            document.getElementById('fixedTimeInput').classList.toggle('hidden', mode !== 'fixed');
+            document.getElementById('randomTimeInput').classList.toggle('hidden', mode === 'fixed');
+        }
+
+        function updateInitialCountdownDisplay() {
+            if (isPlaying) return;
+            const min = parseInt(document.getElementById('durationMin').value) || 0;
+            const sec = parseInt(document.getElementById('durationSec').value) || 0;
+            updateCountdownUI((min * 60) + sec);
+        }
+
+        function speak(text) {
+            window.speechSynthesis.cancel(); 
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-HK';        
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function getNextCommand() {
+            if (commands.length === 0) return null;
+            const mode = document.querySelector('input[name="playMode"]:checked').value;
+
+            if (mode === 'sequence') {
+                const cmd = commands[sequenceIndex];
+                sequenceIndex = (sequenceIndex + 1) % commands.length; 
+                return cmd;
+            } else {
+                const total = commands.reduce((sum, cmd) => sum + cmd.weight, 0);
+                let random = Math.random() * total;
+                for (const cmd of commands) {
+                    if (random < cmd.weight) return cmd;
+                    random -= cmd.weight;
+                }
+                return commands[commands.length - 1];
+            }
+        }
+
+        function playLoop() {
+            if (!isPlaying) return;
+            const cmd = getNextCommand();
+            if (!cmd) { stopPlayback(); return; }
+
+            document.getElementById('statusDisplay').innerHTML = `🔊 播放：<span class="text-blue-400 font-extrabold text-lg">${cmd.text}</span>`;
+            speak(cmd.text);
+
+            const mode = document.querySelector('input[name="timeMode"]:checked').value;
+            let delay = 3000; 
+            if (mode === 'fixed') {
+                delay = parseFloat(document.getElementById('fixedSeconds').value) * 1000;
+            } else {
+                const min = parseFloat(document.getElementById('minSeconds').value);
+                const max = parseFloat(document.getElementById('maxSeconds').value);
+                delay = (Math.random() * (Math.max(min, max) - Math.min(min, max)) + Math.min(min, max)) * 1000;
+            }
+            timerId = setTimeout(playLoop, delay);
+        }
+
+        function startCountdown() {
+            updateCountdownUI(totalSecondsLeft);
+            countdownId = setInterval(() => {
+                totalSecondsLeft--;
+                updateCountdownUI(totalSecondsLeft);
+                if (totalSecondsLeft <= 0) {
+                    stopPlayback();
+                    document.getElementById('statusDisplay').innerText = "⏱️ 訓練結束";
+                }
+            }, 1000);
+        }
+
+        function updateCountdownUI(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            document.getElementById('countdownContainer').innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function startPlayback() {
+            if (commands.length === 0) return alert('請先加入指令！');
+            const min = parseInt(document.getElementById('durationMin').value) || 0;
+            const sec = parseInt(document.getElementById('durationSec').value) || 0;
+            totalSecondsLeft = (min * 60) + sec;
+            if (totalSecondsLeft <= 0) return alert('請設定總時長！');
+            
+            isPlaying = true;
+            sequenceIndex = 0; 
+            toggleButtons(true);
+            
+            document.getElementById('statusDot').className = "w-3 h-3 rounded-full bg-emerald-500 animate-ping";
+            document.getElementById('countdownContainer').className = "text-2xl font-black font-mono tracking-wider bg-slate-800 px-4 py-1.5 rounded-xl border border-emerald-500 text-emerald-400";
+            
+            playLoop();
+            startCountdown();
+        }
+
+        function stopPlayback() {
+            isPlaying = false;
+            if (timerId) clearTimeout(timerId);
+            if (countdownId) clearInterval(countdownId);
+            window.speechSynthesis.cancel(); 
+            
+            document.getElementById('statusDisplay').innerText = "狀態：已停止";
+            document.getElementById('statusDot').className = "w-3 h-3 rounded-full bg-slate-500";
+            document.getElementById('countdownContainer').className = "text-2xl font-black font-mono tracking-wider bg-slate-800 px-4 py-1.5 rounded-xl border border-slate-700 text-slate-400";
+            
+            toggleButtons(false);
+            updateInitialCountdownDisplay();
+        }
+
+        function toggleButtons(running) {
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            if (running) {
+                startBtn.disabled = true;
+                startBtn.className = "flex-1 bg-slate-800 text-slate-600 font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 cursor-not-allowed text-sm sm:text-base";
+                stopBtn.disabled = false;
+                stopBtn.className = "flex-1 bg-rose-600 hover:bg-rose-700 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-sm sm:text-base";
+            } else {
+                startBtn.disabled = false;
+                startBtn.className = "flex-1 bg-blue-500 hover:bg-blue-600 active:scale-[0.99] text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-sm sm:text-base";
+                stopBtn.disabled = true;
+                stopBtn.className = "flex-1 bg-slate-800 text-slate-500 font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 cursor-not-allowed border border-slate-900 text-sm sm:text-base";
+            }
+        }
+    </script>
 </body>
 </html>
