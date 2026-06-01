@@ -3,6 +3,7 @@
   "short_name": "指令播放器",
   "description": "自訂動作、權重比例，打造專屬的節奏訓練助手（支援粵語發音）",
   "start_url": "./index.html",
+  "scope": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
