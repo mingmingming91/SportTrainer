@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎙️ 智能指令音訊隨機播放器 (RWD 分離版)</title>
+    <title>🎙️ 智能指令音訊隨機播放器 (多配置版)</title>
     
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#020617">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -17,13 +17,11 @@
     
     <style>
         body { font-family: 'Inter', sans-serif; }
-        /* 拖曳時的虛線與過渡樣式 */
         .dragging { 
             opacity: 0.4; 
             background-color: #1e293b !important; 
             border: 2px dashed #3b82f6 !important; 
         }
-        /* 隱藏數字輸入框的微調箭頭 */
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button {
             -webkit-appearance: none;
@@ -49,9 +47,6 @@
                     <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
                         <span class="material-icons-round text-slate-500">format_list_numbered</span> 1. 訓練指令清單
                     </h2>
-                    <span class="text-[10px] sm:text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full font-medium border border-slate-700/50">
-                        按住指令任一處即可拖曳排序
-                    </span>
                 </div>
 
                 <div class="space-y-2" id="commandList">
@@ -73,7 +68,6 @@
                             <input type="number" id="cmdWeight" placeholder="權重" value="10" min="1" max="100" 
                                    class="w-full pl-8 pr-2 py-2 text-sm text-center bg-slate-900 border border-slate-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 text-slate-100 font-semibold transition">
                         </div>
-
                         <button onclick="addCommand()" class="flex-1 sm:flex-none bg-blue-600 hover:bg-blue-500 active:scale-[0.98] text-white px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-1 shadow-md shadow-blue-900/20">
                             <span class="material-icons-round text-sm">add</span> 新增
                         </button>
@@ -91,14 +85,12 @@
                             <input type="radio" name="playMode" value="sequence" checked class="w-4 h-4 text-blue-500 border-slate-700 bg-slate-900 focus:ring-blue-500">
                             <div class="text-xs">
                                 <p class="font-semibold text-slate-200">模式一：順序循環</p>
-                                <p class="text-slate-500">依序號輪流播放</p>
                             </div>
                         </label>
                         <label class="flex items-center gap-3 p-2.5 bg-slate-950/40 border border-slate-800 rounded-xl cursor-pointer hover:bg-slate-800/50 transition">
                             <input type="radio" name="playMode" value="random" class="w-4 h-4 text-blue-500 border-slate-700 bg-slate-900 focus:ring-blue-500">
                             <div class="text-xs">
                                 <p class="font-semibold text-slate-200">模式二：隨機機率</p>
-                                <p class="text-slate-500">依權重比例抽選</p>
                             </div>
                         </label>
                     </div>
@@ -120,14 +112,14 @@
                     <div id="fixedTimeInput" class="flex items-center gap-2 text-xs bg-slate-950/40 p-3 rounded-xl border border-slate-800">
                         <span class="text-slate-400">每隔</span>
                         <input type="number" id="fixedSeconds" value="3" min="0.5" step="0.5" class="w-16 p-1 text-center bg-slate-900 border border-slate-800 rounded-md font-semibold text-blue-400 focus:outline-none focus:border-blue-500">
-                        <span class="text-slate-400">秒播放一次</span>
+                        <span class="text-slate-400">秒</span>
                     </div>
 
                     <div id="randomTimeInput" class="hidden flex items-center gap-1.5 text-xs bg-slate-950/40 p-3 rounded-xl border border-slate-800">
                         <input type="number" id="minSeconds" value="1" min="0.5" step="0.5" class="w-14 p-1 text-center bg-slate-900 border border-slate-800 rounded-md font-semibold text-blue-400 focus:outline-none focus:border-blue-500">
-                        <span class="text-slate-400">至</span>
+                        <span>至</span>
                         <input type="number" id="maxSeconds" value="5" min="0.5" step="0.5" class="w-14 p-1 text-center bg-slate-900 border border-slate-800 rounded-md font-semibold text-blue-400 focus:outline-none focus:border-blue-500">
-                        <span class="text-slate-400">秒之間隨機</span>
+                        <span>秒</span>
                     </div>
                 </div>
 
@@ -135,7 +127,7 @@
                     <label class="text-sm font-bold text-slate-300 flex items-center gap-1.5">
                         <span class="material-icons-round text-slate-500 text-lg">hourglass_top</span> 訓練總時長
                     </label>
-                    <p class="text-xs text-slate-500 pt-1">設定本次訓練的倒數總時間</p>
+                    <p class="text-xs text-slate-500 pt-1">設定倒數總時間</p>
                     <div class="flex items-center gap-2 bg-slate-950/40 p-3 rounded-xl border border-slate-800 text-xs">
                         <input type="number" id="durationMin" value="3" min="0" max="60" class="w-14 p-1 text-center bg-slate-900 border border-slate-800 rounded-md font-semibold text-slate-200 focus:outline-none focus:border-blue-500">
                         <span class="text-slate-500">分</span>
@@ -145,7 +137,38 @@
                 </div>
             </section>
 
-            <section class="bg-slate-900 text-white rounded-2xl shadow-2xl border border-slate-800 p-4 sm:p-6 space-y-6" id="dashboardPanel">
+            <section class="bg-slate-900 rounded-2xl shadow-xl border border-slate-800/80 p-4 sm:p-6 space-y-4">
+                <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                    <span class="material-icons-round text-blue-500">save</span> 2. 配置方案管理庫
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-950/50 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
+                        <label class="text-xs font-bold text-slate-400 block">💾 儲存目前設定為新方案</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="profileNameInput" placeholder="輸入此配置名稱 (如：重拳組合)" 
+                                   class="flex-1 px-3 py-2 text-xs bg-slate-900 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-blue-500 font-semibold">
+                            <button onclick="saveCurrentToNewProfile()" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-2 rounded-lg text-xs font-bold transition whitespace-nowrap">
+                                儲存方案
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-950/50 p-3.5 rounded-xl border border-slate-800 space-y-2.5">
+                        <label class="text-xs font-bold text-slate-400 block">📂 選擇並載入已有配置</label>
+                        <div class="flex gap-2">
+                            <select id="profileSelect" onchange="loadSelectedProfile()" 
+                                    class="flex-1 px-2 py-2 text-xs bg-slate-900 border border-slate-800 rounded-lg text-slate-100 focus:outline-none focus:border-blue-500 font-semibold cursor-pointer">
+                                </select>
+                            <button onclick="deleteSelectedProfile()" class="bg-slate-800 hover:bg-rose-900/60 hover:text-rose-400 text-slate-400 px-3 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center">
+                                <span class="material-icons-round text-sm">delete</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-slate-900 text-white rounded-2xl shadow-2xl border border-slate-800 p-4 sm:p-6 space-y-6">
                 <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pb-4 border-b border-slate-800">
                     <div class="flex items-center gap-3 text-center sm:text-left">
                         <div class="w-3 h-3 rounded-full bg-slate-600" id="statusDot"></div>
@@ -169,6 +192,6 @@
         </main>
     </div>
 
-    <script src="script.js"></script>
+    <script src="./script.js"></script>
 </body>
 </html>
